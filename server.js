@@ -17,11 +17,6 @@ var connection = mysql.createConnection({
 	database: 'staffDB',
 });
 
-connection.connect(function (err) {
-	if (err) throw err;
-	mainMenu();
-});
-
 // declaring function used to enable main menu functionality
 function mainMenu() {
 	inquirer
