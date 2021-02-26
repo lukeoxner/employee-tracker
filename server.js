@@ -139,9 +139,33 @@ function viewAllRoles() {
 
 function addRole() {}
 
-function viewAllDepartments() {}
+// declaring function that allows us to view departments
+function viewAllDepartments() {
+	let query = `SELECT * FROM department ORDER BY id`;
+	connection.query(query, (err, res) => {
+		if (err) throw err;
+		console.table(res);
+		mainMenu();
+	});
+}
 
-function addDepartment() {}
+// declaring function to add a new department
+function addDepartment() {
+	inquirer
+		.prompt({
+			name: 'choice',
+			type: 'input',
+			message: 'What department would you like to add?',
+		})
+		.then((answer) => {
+			let query = 'INSERT INTO department SET ?';
+			connection.query(query, { name: answer.choice }, (err, res) => {
+				if (err) throw err;
+				console.log('Department added!');
+				mainMenu();
+			});
+		});
+}
 
 // Connect to the DB
 connection.connect((err) => {
