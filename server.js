@@ -97,15 +97,15 @@ function departmentMenu() {
 			name: 'choice',
 			type: 'list',
 			message: 'What would you like to do?',
-			choices: ['View all roles', 'Add a role'],
+			choices: ['View all departments', 'Add a department'],
 		})
 		.then((answer) => {
 			switch (answer.choice) {
-				case 'View all roles':
-					viewAllRoles();
+				case 'View all departments':
+					viewAllDepartments();
 					break;
-				case 'Add a role':
-					addRole();
+				case 'Add a department':
+					addDepartment();
 					break;
 			}
 		});
