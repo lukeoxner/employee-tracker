@@ -72,11 +72,43 @@ function employeeMenu() {
 }
 
 function roleMenu() {
-	console.log('role menu!');
+	inquirer
+		.prompt({
+			name: 'choice',
+			type: 'list',
+			message: 'What would you like to do?',
+			choices: ['View all roles', 'Add a role'],
+		})
+		.then((answer) => {
+			switch (answer.choice) {
+				case 'View all roles':
+					viewAllRoles();
+					break;
+				case 'Add a role':
+					addRole();
+					break;
+			}
+		});
 }
 
 function departmentMenu() {
-	console.log('department menu!');
+	inquirer
+		.prompt({
+			name: 'choice',
+			type: 'list',
+			message: 'What would you like to do?',
+			choices: ['View all roles', 'Add a role'],
+		})
+		.then((answer) => {
+			switch (answer.choice) {
+				case 'View all roles':
+					viewAllRoles();
+					break;
+				case 'Add a role':
+					addRole();
+					break;
+			}
+		});
 }
 
 // Connect to the DB
