@@ -17,5 +17,28 @@ var connection = mysql.createConnection({
 
 connection.connect(function (err) {
 	if (err) throw err;
-	runSearch();
+	mainMenu();
 });
+
+function mainMenu() {
+	inquirer
+		.prompt({
+			name: 'choice',
+			type: 'list',
+			message: 'Choose a category: ',
+			choices: ['Employees', 'Roles', 'Departments'],
+		})
+		.then(function (answer) {
+			switch (answer.choice) {
+				case 'Employees':
+					employeeMenu();
+					break;
+				case 'Roles':
+					roleMenu();
+					break;
+				case 'Departments':
+					departmentMenu();
+					break;
+			}
+		});
+}
