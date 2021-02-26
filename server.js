@@ -123,7 +123,50 @@ function viewAllEmployees() {
 }
 
 // declaring function that enables adding a new employee
-function addEmployee() {}
+function addEmployee() {
+	connection.query('SELECT title, id FROM role', (err, res) => {
+		if (err) throw err;
+		let titles = res;
+
+		connection.query(
+			`SELECT CONCAT(first_name, " ", last_name) AS name, id FROM employee`,
+			(err, res) => {
+				if (err) throw err;
+
+				let managers = res;
+				managers.unshift({ name: 'No Manager', id: 0 });
+
+				inquirer
+					.prompt([
+						{
+							name: 'firstName',
+							type: 'input',
+							message: "Enter the employee's first name:",
+						},
+						{
+							name: 'lastName',
+							type: 'input',
+							message: "Enter the employee's last name:",
+						},
+						{
+							name: 'role',
+							type: 'list',
+							message: "Enter the employee's role:",
+							choices: titles.map((titles) => titles.title),
+						},
+						{
+							name: 'daBoss',
+							type: 'list',
+							message:
+								"Enter the employee's manager (if they don't have one, select 'No Manager'):",
+							choices: managers.map((names) => names.name),
+						},
+					])
+					.then((answers) => {});
+			}
+		);
+	});
+}
 
 function updateRole() {}
 
