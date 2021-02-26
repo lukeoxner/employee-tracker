@@ -1,20 +1,19 @@
 var mysql = require('mysql');
-var express = require('express');
 var inquirer = require('inquirer');
 var conTab = require('console.table');
 
 var connection = mysql.createConnection({
 	host: 'localhost',
-
-	// Your port; if not 3306
 	port: 3306,
-
-	// Your username
 	user: 'root',
-
-	// Your password
 	password: 'password',
 	database: 'staffDB',
+});
+
+// Connecting to the database
+connection.connect((err) => {
+	if (err) throw err;
+	mainMenu();
 });
 
 // declaring function used to enable main menu functionality
@@ -44,6 +43,7 @@ function mainMenu() {
 		});
 }
 
+// declaring function for employee submenu
 function employeeMenu() {
 	inquirer
 		.prompt({
@@ -71,6 +71,7 @@ function employeeMenu() {
 		});
 }
 
+// declaring function for role submenu
 function roleMenu() {
 	inquirer
 		.prompt({
@@ -91,6 +92,7 @@ function roleMenu() {
 		});
 }
 
+// declaring function for department submenu
 function departmentMenu() {
 	inquirer
 		.prompt({
@@ -194,7 +196,56 @@ function addEmployee() {
 	});
 }
 
-function updateRole() {}
+// declaring function that enables changing employee role
+function updateRole() {
+	connection.query('SELECT title, id FROM role', (err, res) => {
+		if (err) throw err;
+		let titles = res;
+
+		connection.query(
+			`SELECT CONCAT(first_name, " ", last_name) AS name, id FROM employee`,
+			(err, res) => {
+				if (err) throw err;
+				let currentEmployees = res;
+
+				inquirer
+					.prompt([
+						{
+							name: 'employee',
+							type: 'list',
+							message: 'Select the employee whose role you want to change:',
+							choices: currentEmployees.map((names) => names.name),
+						},
+
+						{
+							name: 'title',
+							type: 'list',
+							message: 'Select a new role for the employee:',
+							choices: titles.map((titles) => titles.title),
+						},
+					])
+					.then((response) => {
+						let roleId = titles.filter((el) => el.title === response.title)[0]
+							.id;
+
+						let id = currentEmployees.filter(
+							(names) => names.name === response.employee
+						)[0].id;
+
+						connection.query(
+							'UPDATE employee SET ? WHERE ?',
+							[{ role_id: roleId }, { id: id }],
+							(err, res) => {
+								if (err) throw err;
+								console.log('Employee role updated!');
+								mainMenu();
+							}
+						);
+					});
+			}
+		);
+	});
+}
 
 // declaring function that allows us to view all roles
 function viewAllRoles() {
@@ -276,10 +327,3 @@ function addDepartment() {
 			});
 		});
 }
-
-// Connect to the DB
-connection.connect((err) => {
-	if (err) throw err;
-	console.log(`connected as id ${connection.threadId}\n`);
-	mainMenu();
-});
