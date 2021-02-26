@@ -111,6 +111,38 @@ function departmentMenu() {
 		});
 }
 
+// declaring function that enables viewing all employees
+function viewAllEmployees() {
+	let query = `SELECT employee.id, employee.first_name, employee.last_name, title, department.name AS department, salary, CONCAT(manager.first_name, " ", manager.last_name) AS manager FROM employee INNER JOIN role ON employee.role_id = role.id INNER JOIN department ON role.department_id = department.id LEFT JOIN employee AS manager ON employee.manager_id = manager.id ORDER BY employee.id`;
+
+	connection.query(query, (err, res) => {
+		if (err) throw err;
+		console.table(res);
+		mainMenu();
+	});
+}
+
+function addEmployee() {}
+
+function updateRole() {}
+
+// declaring function that allows us to view all roles
+function viewAllRoles() {
+	let query = `SELECT role.id, title, salary, name AS department FROM role INNER JOIN department ON role.department_id = department.id ORDER BY role.id`;
+
+	connection.query(query, (err, res) => {
+		if (err) throw err;
+		console.table(res);
+		mainMenu();
+	});
+}
+
+function addRole() {}
+
+function viewAllDepartments() {}
+
+function addDepartment() {}
+
 // Connect to the DB
 connection.connect((err) => {
 	if (err) throw err;
