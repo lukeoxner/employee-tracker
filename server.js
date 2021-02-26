@@ -1,5 +1,7 @@
 var mysql = require('mysql');
+var express = require('express');
 var inquirer = require('inquirer');
+var conTab = require('console.table');
 
 var connection = mysql.createConnection({
 	host: 'localhost',
@@ -20,13 +22,14 @@ connection.connect(function (err) {
 	mainMenu();
 });
 
+// declaring function used to enable main menu functionality
 function mainMenu() {
 	inquirer
 		.prompt({
 			name: 'choice',
 			type: 'list',
 			message: 'Choose a category: ',
-			choices: ['Employees', 'Roles', 'Departments'],
+			choices: ['Employees', 'Roles', 'Departments', 'Exit Program'],
 		})
 		.then(function (answer) {
 			switch (answer.choice) {
@@ -39,6 +42,29 @@ function mainMenu() {
 				case 'Departments':
 					departmentMenu();
 					break;
+				case 'Exit Program':
+					connection.end();
+					break;
 			}
 		});
 }
+
+function employeeMenu() {
+	console.log('employee menu!');
+	// inquirer.prompt({}).then();
+}
+
+function roleMenu() {
+	console.log('role menu!');
+}
+
+function departmentMenu() {
+	console.log('department menu!');
+}
+
+// Connect to the DB
+connection.connect((err) => {
+	if (err) throw err;
+	console.log(`connected as id ${connection.threadId}\n`);
+	mainMenu();
+});
