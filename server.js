@@ -162,7 +162,33 @@ function addEmployee() {
 							choices: managers.map((names) => names.name),
 						},
 					])
-					.then((answers) => {});
+					.then((answers) => {
+						let roleId = titles.filter(
+							(roles) => roles.title === answers.role
+						)[0].id;
+
+						let managerId = managers.filter(
+							(names) => names.name === answers.daBoss
+						)[0].id;
+
+						let newEmployee = {
+							first_name: answers.firstName,
+							last_name: answers.lastName,
+							role_id: roleId,
+						};
+						if (managerId != 0) {
+							newEmployee.manager_id = managerId;
+						}
+						connection.query(
+							'INSERT INTO employee SET ?',
+							newEmployee,
+							(err, res) => {
+								if (err) throw err;
+								console.log('New employee added!');
+								mainMenu();
+							}
+						);
+					});
 			}
 		);
 	});
