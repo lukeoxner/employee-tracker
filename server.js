@@ -122,6 +122,7 @@ function viewAllEmployees() {
 	});
 }
 
+// declaring function that enables adding a new employee
 function addEmployee() {}
 
 function updateRole() {}
@@ -137,7 +138,47 @@ function viewAllRoles() {
 	});
 }
 
-function addRole() {}
+// declaring function to add new role
+function addRole() {
+	connection.query('SELECT name, id FROM department', (err, res) => {
+		if (err) throw err;
+		inquirer
+			.prompt([
+				{
+					name: 'department',
+					type: 'list',
+					message: 'Select a department for the new role:',
+					choices: res.map((names) => names.name),
+				},
+				{
+					name: 'role',
+					type: 'input',
+					message: 'Enter a name for the new role:',
+				},
+				{
+					name: 'salary',
+					type: 'input',
+					message:
+						'Enter a salary for the new role (numeric values only, please!):',
+				},
+			])
+			.then((answers) => {
+				let id = res.filter((names) => names.name === answers.department)[0].id;
+
+				let role = {
+					title: answers.role,
+					salary: parseInt(answers.salary),
+					department_id: id,
+				};
+
+				connection.query('INSERT INTO role SET ?', role, (err, res) => {
+					if (err) throw err;
+					console.log('New role added!');
+					mainMenu();
+				});
+			});
+	});
+}
 
 // declaring function that allows us to view departments
 function viewAllDepartments() {
@@ -155,7 +196,7 @@ function addDepartment() {
 		.prompt({
 			name: 'choice',
 			type: 'input',
-			message: 'What department would you like to add?',
+			message: 'Enter a name for the new department:',
 		})
 		.then((answer) => {
 			let query = 'INSERT INTO department SET ?';
